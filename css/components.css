@@ -1,0 +1,193 @@
+/* The pieces that appear on more than one screen: buttons, bars, tiles, chips. */
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+  border: 0;
+  border-radius: var(--r-pill);
+  padding: var(--s3) var(--s5);
+  font-weight: 800;
+  font-size: var(--fs-md);
+  letter-spacing: 0.01em;
+  transition: transform var(--t-fast) var(--ease), filter var(--t-fast);
+}
+
+.btn:active { transform: translateY(1px) scale(0.985); }
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: #241706;
+  box-shadow: var(--sh-2), var(--glow-gold);
+}
+
+.btn-primary:disabled {
+  background: var(--night-600);
+  color: var(--bone-mute);
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn-ghost {
+  background: var(--glass);
+  color: var(--bone);
+  border: 1px solid var(--glass-line);
+}
+
+.btn-small { padding: var(--s2) var(--s3); font-size: var(--fs-sm); }
+.btn.is-disabled { opacity: 0.5; cursor: default; }
+
+.icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  font-size: var(--fs-md);
+  line-height: 1;
+}
+
+.icon-btn.is-on { border-color: var(--teal); color: var(--teal); }
+.lang-btn { width: auto; padding: 0 var(--s3); font-size: var(--fs-xs); font-weight: 800; }
+
+/* ------------------------------------------------------------------- bars */
+
+.hp-bar, .spirit-meter, .charge-track, .topic-bar, .track {
+  position: relative;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-pill);
+}
+
+.hp-bar { height: 10px; }
+.spirit-meter { height: 5px; margin-top: 3px; }
+.charge-track { height: 8px; flex: 1; }
+.track { height: 6px; flex: 1; }
+
+.hp-fill, .spirit-fill, .charge-fill, .track-fill, .topic-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  transition: width var(--t-mid) var(--ease);
+}
+
+.hp-fill-hero { background: linear-gradient(90deg, var(--leaf), #8FE3AC); }
+.hp-fill-enemy { background: linear-gradient(90deg, var(--crimson-deep), var(--crimson)); }
+.spirit-fill { background: linear-gradient(90deg, var(--gold-deep), var(--gold)); box-shadow: var(--glow-gold); }
+.track-fill { background: var(--teal); }
+
+.charge-fill { background: linear-gradient(90deg, #6A3B8F, var(--crimson)); }
+.charge-fill.is-imminent { animation: pulse-warn 0.5s infinite; }
+
+@keyframes pulse-warn {
+  50% { filter: brightness(1.6); }
+}
+
+/* An erased element is still in the layout — the boss removes information,
+   not the interface, and a bar that vanished would reflow the whole screen. */
+.is-erased {
+  filter: grayscale(1) brightness(0.4);
+  opacity: 0.35;
+}
+
+/* ------------------------------------------------------------- answer tiles */
+
+.tile-bank {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+}
+
+.tile {
+  min-height: 3.25rem;
+  padding: var(--s3);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 2px solid var(--glass-line);
+  border-radius: var(--r-md);
+  background: var(--night-700);
+  color: var(--bone);
+  font-size: var(--fs-md);
+  transition: border-color var(--t-fast), transform var(--t-fast) var(--ease),
+              box-shadow var(--t-fast);
+}
+
+.tile:active { transform: scale(0.97); }
+
+.tile.is-picked {
+  border-color: var(--gold);
+  box-shadow: var(--glow-gold);
+}
+
+.tile:disabled { opacity: 0.55; cursor: default; }
+
+.tile.is-gone {
+  opacity: 0.12;
+  text-decoration: line-through;
+}
+
+.numeric-wrap { display: flex; justify-content: center; }
+
+.numeric-input {
+  width: min(14rem, 100%);
+  padding: var(--s3);
+  text-align: center;
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--bone);
+  background: var(--night-700);
+  border: 2px solid var(--glass-line);
+  border-radius: var(--r-md);
+}
+
+.numeric-input:focus { border-color: var(--teal); outline: none; }
+
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); }
+.match-col { display: grid; gap: var(--s2); }
+.match-badge {
+  position: absolute;
+  top: 4px; right: 6px;
+  font-size: var(--fs-xs);
+  color: var(--teal);
+  font-weight: 800;
+}
+.match-col .tile { position: relative; }
+.match-col .tile.is-active { border-color: var(--teal); }
+.match-col .tile.is-paired { border-color: var(--gold); }
+
+/* ------------------------------------------------------------------ chips */
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+}
+
+.count-icon { width: 18px; height: 18px; }
+
+.stars { display: inline-flex; gap: 2px; }
+.star { color: var(--night-600); font-size: var(--fs-sm); }
+.star.is-on { color: var(--gold); text-shadow: var(--glow-gold); }
+.stars-lg .star { font-size: var(--fs-xl); }
+
+.phase-badge {
+  margin-left: var(--s2);
+  padding: 0 var(--s2);
+  border-radius: var(--r-pill);
+  background: var(--violet-900);
+  border: 1px solid var(--crimson);
+  color: var(--crimson);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+}

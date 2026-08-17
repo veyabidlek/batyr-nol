@@ -1,0 +1,494 @@
+/* Per-screen layout. Everything below assumes a phone first; the only
+   desktop concession is the 560px cap on #app. */
+
+/* --------------------------------------------------------------- the road */
+
+.path-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+/* The title must not wrap: "Батыр жолы II" breaking after "жолы" drops the
+   numeral onto its own line and shunts it under the crystal counters. */
+.brand { min-width: 0; }
+.brand-title {
+  font-size: clamp(1.35rem, 6.2vw, 2.1rem);
+  white-space: nowrap;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--bone), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand-sub { color: var(--bone-mute); font-size: var(--fs-sm); }
+.path-counts { display: flex; align-items: center; gap: var(--s2); }
+
+.hero-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--night-700), var(--night-800));
+  text-align: left;
+}
+.hero-strip-art { width: 46px; height: 46px; object-fit: contain; object-position: top; }
+.hero-strip-text { display: grid; flex: 1; font-size: var(--fs-sm); }
+.hero-strip-text span { color: var(--bone-mute); }
+.hero-strip-swap { color: var(--teal); font-size: var(--fs-lg); }
+
+.path-side { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+.side-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s3) var(--s2);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-md);
+  background: var(--glass);
+  text-align: center;
+  font-size: var(--fs-xs);
+}
+.side-card.is-done { border-color: var(--leaf); color: var(--leaf); }
+.side-icon { font-size: var(--fs-lg); }
+.side-text { display: grid; gap: 2px; }
+.side-text span { color: var(--bone-mute); }
+
+.act { display: grid; gap: var(--s2); }
+.act-title {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bone-mute);
+}
+.stops { display: grid; gap: var(--s2); }
+
+.stop {
+  display: grid;
+  grid-template-columns: auto 62px 1fr auto;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--night-700), var(--night-800));
+  text-align: left;
+  box-shadow: var(--sh-1);
+  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast);
+}
+.stop:active { transform: scale(0.99); }
+.stop.is-cleared { border-color: rgba(242, 182, 60, 0.4); }
+.stop.is-boss {
+  border-color: var(--crimson);
+  background: linear-gradient(180deg, var(--violet-900), var(--night-800));
+}
+
+/* A locked stop still shows who is waiting there — silhouetted, because
+   knowing the next herald exists is most of what makes a child want to reach
+   them, and seeing them clearly would spend the reveal early. */
+.stop.is-locked { opacity: 0.75; }
+.stop.is-locked .stop-foe { filter: brightness(0) opacity(0.45); }
+.stop.is-locked .stop-name { color: var(--bone-mute); }
+
+.stop-index {
+  width: 1.6rem;
+  font-size: var(--fs-lg);
+  font-weight: 900;
+  color: var(--bone-mute);
+  text-align: center;
+}
+.stop-art { display: grid; place-items: center; height: 62px; }
+.stop-foe { max-height: 62px; width: auto; object-fit: contain; }
+.stop-text { display: grid; gap: 1px; min-width: 0; }
+.stop-name { font-weight: 800; }
+.stop-epithet { font-size: var(--fs-xs); color: var(--teal); }
+.stop-topic { font-size: var(--fs-xs); color: var(--bone-mute); }
+.stop-lock { font-size: var(--fs-md); }
+
+/* ------------------------------------------------------------ hero select */
+
+.screen-hero { justify-content: center; min-height: 100dvh; }
+.hero-title { text-align: center; font-size: var(--fs-xl); font-weight: 900; }
+.hero-cards { display: grid; gap: var(--s3); }
+.hero-card {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s3);
+  border: 2px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--night-700), var(--night-800));
+  text-align: left;
+}
+.hero-card.is-picked { border-color: var(--gold); box-shadow: var(--glow-gold); }
+.hero-card-art { height: 130px; object-fit: contain; object-position: bottom; }
+.hero-card-text { display: grid; gap: var(--s1); }
+.hero-card-name { font-size: var(--fs-lg); }
+.hero-card-blurb { font-size: var(--fs-sm); color: var(--bone-soft); }
+.hero-card-ult { font-size: var(--fs-xs); color: var(--gold); font-weight: 800; }
+
+/* --------------------------------------------------------------- the fight */
+
+.screen-battle { gap: var(--s3); padding-bottom: 6rem; }
+
+.ex-top { display: flex; align-items: center; gap: var(--s2); }
+.hp-mini { display: flex; align-items: center; gap: var(--s1); font-weight: 800; }
+.hp-mini-icon { width: 20px; height: 20px; }
+
+.battle-body { display: grid; gap: var(--s3); }
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: var(--s2);
+  min-height: 240px;
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--glass-line);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stage-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  /* The arena is scenery, not content: dimmed so the fighters and the bars
+     stay the brightest things on screen. */
+  filter: brightness(0.55) saturate(0.9);
+  transition: filter var(--t-slow);
+}
+
+.stage[data-phase='2'] .stage-bg { filter: brightness(0.45) saturate(1.2) hue-rotate(-18deg); }
+.stage[data-phase='3'] .stage-bg { filter: brightness(0.35) saturate(1.4) hue-rotate(-35deg); }
+.stage.is-telegraph { animation: telegraph-glow 0.9s infinite; }
+
+@keyframes telegraph-glow {
+  50% { box-shadow: inset 0 0 60px rgba(226, 62, 76, 0.55); }
+}
+
+.fighter { display: grid; justify-items: center; gap: var(--s2); }
+
+/* The bars sit over a painted arena, so they get their own dark backing —
+   a 10px health bar on a sunset sky is unreadable at arm's length. */
+.fighter-meta {
+  width: 100%;
+  display: grid;
+  gap: 2px;
+  padding: var(--s1) var(--s2);
+  border-radius: var(--r-sm);
+  background: rgba(6, 5, 16, 0.55);
+  backdrop-filter: blur(2px);
+}
+.fighter-name { font-size: var(--fs-xs); font-weight: 800; }
+.fighter-enemy-slot .fighter-name { text-align: right; }
+
+.fighter-art {
+  height: 150px;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.55));
+}
+
+/* ⚠️ The hero is mirrored to face the enemy, so anything that also writes
+   `transform` here must compose scale and translate separately or the
+   character flips mid-swing. The FX layer uses `translate` and `scale` as
+   independent properties for exactly this reason. */
+.fighter-art-hero { transform: scaleX(-1); }
+.fighter-art-enemy { translate: calc(var(--advance, 0px) * -1) 0; }
+
+.charge { display: flex; align-items: center; gap: var(--s2); }
+.charge-label { font-size: var(--fs-xs); color: var(--bone-mute); white-space: nowrap; }
+
+.power-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--teal-deep);
+  border-radius: var(--r-pill);
+  background: rgba(49, 216, 208, 0.08);
+  color: var(--teal);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+}
+.power-state { font-variant-numeric: tabular-nums; }
+
+.attack-label { font-size: var(--fs-xs); color: var(--bone-mute); text-align: center; }
+.attacks { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+.attacks.is-locked { opacity: 0.55; }
+
+.attack {
+  display: grid;
+  gap: 2px;
+  padding: var(--s2);
+  border: 2px solid var(--glass-line);
+  border-radius: var(--r-md);
+  background: var(--night-700);
+  text-align: center;
+}
+.attack.is-picked { border-color: var(--gold); box-shadow: var(--glow-gold); }
+.attack-icon { font-size: var(--fs-lg); }
+.attack-name { font-size: var(--fs-sm); font-weight: 800; }
+.attack-hint { font-size: 0.66rem; color: var(--bone-mute); line-height: 1.2; }
+.attack-stat { font-size: var(--fs-xs); color: var(--gold); }
+
+.question { display: grid; gap: var(--s3); }
+.q-prompt { font-weight: 800; text-align: center; }
+.q-tex { text-align: center; }
+
+.feedback {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-line);
+  background: var(--night-800);
+  position: relative;
+}
+.feedback.is-correct { border-color: var(--leaf); }
+.feedback.is-wrong { border-color: var(--crimson); }
+.feedback-title { font-weight: 900; font-size: var(--fs-lg); }
+.feedback.is-correct .feedback-title { color: var(--leaf); }
+.feedback.is-wrong .feedback-title { color: var(--crimson); }
+.feedback-tags { font-size: var(--fs-sm); color: var(--gold); font-weight: 800; }
+.feedback-exp { font-size: var(--fs-sm); color: var(--bone-soft); line-height: 1.5; }
+.feedback-cub { font-size: var(--fs-sm); color: var(--teal); }
+.feedback-mascot {
+  position: absolute;
+  right: var(--s2);
+  bottom: var(--s2);
+  width: 54px;
+  opacity: 0.9;
+}
+
+.action-zone {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+  display: grid;
+  background: linear-gradient(180deg, transparent, var(--night-900) 45%);
+  z-index: 5;
+}
+.action-zone .btn { max-width: 560px; margin: 0 auto; width: 100%; }
+
+/* The guard button sits over the stage: it has to be reachable by the thumb
+   that is already hovering the answer tiles, and 1.4 seconds is not enough
+   time to travel to the bottom of the screen. */
+.guard-btn {
+  position: absolute;
+  inset: auto 0 var(--s3) 0;
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s3) var(--s5);
+  border: 2px solid var(--gold);
+  border-radius: var(--r-pill);
+  background: rgba(11, 10, 27, 0.92);
+  color: var(--gold);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  box-shadow: var(--glow-gold);
+  opacity: 0;
+  scale: 0.8;
+  transition: opacity var(--t-fast), scale var(--t-fast) var(--ease);
+  z-index: 4;
+}
+.guard-btn.is-open { opacity: 1; scale: 1; animation: guard-pulse 0.45s infinite alternate; }
+.guard-icon { font-size: var(--fs-lg); }
+
+@keyframes guard-pulse {
+  to { box-shadow: 0 0 34px rgba(242, 182, 60, 0.9); }
+}
+
+.stage-banner,
+.stage-speech {
+  position: absolute;
+  left: var(--s3);
+  right: var(--s3);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  text-align: center;
+  z-index: 3;
+  animation: rise-in var(--t-mid) var(--ease);
+}
+.stage-banner {
+  top: var(--s3);
+  background: rgba(11, 10, 27, 0.9);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-weight: 800;
+}
+.stage-speech {
+  bottom: var(--s3);
+  background: rgba(11, 10, 27, 0.9);
+  border: 1px solid var(--glass-line);
+  color: var(--bone-soft);
+  font-style: italic;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; translate: 0 10px; }
+}
+
+.spirit-badge {
+  position: absolute;
+  top: var(--s3);
+  right: var(--s3);
+  padding: var(--s1) var(--s3);
+  border-radius: var(--r-pill);
+  background: var(--gold);
+  color: #241706;
+  font-size: var(--fs-xs);
+  font-weight: 900;
+  box-shadow: var(--glow-gold);
+  z-index: 3;
+}
+
+/* ------------------------------------------------------------- the comics */
+
+.screen-cutscene {
+  justify-content: center;
+  min-height: 100dvh;
+  cursor: pointer;
+  gap: var(--s3);
+}
+
+.panel {
+  display: grid;
+  gap: 0;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--sh-3);
+}
+
+.panel-art {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  opacity: 0;
+  scale: 1.06;
+}
+.panel-art.is-in { animation: panel-in var(--t-slow) var(--ease) forwards; }
+
+@keyframes panel-in {
+  to { opacity: 1; scale: 1; }
+}
+
+.panel-caption {
+  padding: var(--s4);
+  background: var(--night-800);
+  display: grid;
+  gap: var(--s2);
+  min-height: 7.5rem;
+}
+.panel-text { line-height: 1.6; font-size: var(--fs-md); }
+.panel-hint {
+  justify-self: end;
+  font-size: var(--fs-xs);
+  color: var(--bone-mute);
+  animation: blink 1.4s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0.25; } }
+
+.panel-foot { display: flex; align-items: center; justify-content: space-between; }
+.panel-dots { display: flex; gap: var(--s1); }
+.panel-dot {
+  width: 8px; height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--night-600);
+}
+.panel-dot.is-on { background: var(--gold); }
+
+/* -------------------------------------------------------------- the result */
+
+.screen-result { justify-content: center; min-height: 100dvh; }
+.result-card {
+  display: grid;
+  justify-items: center;
+  gap: var(--s3);
+  padding: var(--s5) var(--s4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--glass-line);
+  background: linear-gradient(180deg, var(--night-700), var(--night-800));
+  box-shadow: var(--sh-3);
+  text-align: center;
+}
+.screen-result.is-win .result-card { border-color: var(--gold); }
+.result-title { font-size: var(--fs-2xl); font-weight: 900; }
+.screen-result.is-win .result-title { color: var(--gold); text-shadow: var(--glow-gold); }
+.result-line { color: var(--bone-soft); font-size: var(--fs-sm); line-height: 1.5; }
+.result-topic { color: var(--teal); }
+.result-foe { height: 120px; width: auto; object-fit: contain; filter: grayscale(0.4); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s2); width: 100%; }
+.stat { display: grid; gap: 2px; }
+.stat-value { font-size: var(--fs-lg); }
+.stat-label { font-size: 0.66rem; color: var(--bone-mute); line-height: 1.2; }
+.reward { display: flex; align-items: center; gap: var(--s2); color: var(--gold); font-weight: 800; }
+.reward-icon { width: 22px; }
+.result-actions { display: grid; gap: var(--s2); width: 100%; }
+
+/* -------------------------------------------------------- shop and report */
+
+.sub-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.sub-title { font-size: var(--fs-lg); font-weight: 900; }
+.sub-intro { font-size: var(--fs-sm); color: var(--bone-soft); line-height: 1.5; }
+
+.shop-stage { display: grid; place-items: center; padding: var(--s4) 0; }
+.shop-preview { height: 190px; width: auto; object-fit: contain; }
+.shop-warning { color: var(--crimson); font-size: var(--fs-sm); text-align: center; }
+.shop-list { display: grid; gap: var(--s2); }
+.shop-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-md);
+  background: var(--night-800);
+}
+.shop-row.is-worn { border-color: var(--gold); }
+.shop-swatch { height: 48px; width: 48px; object-fit: contain; object-position: top; }
+.shop-text { display: grid; gap: 2px; }
+.shop-price { font-size: var(--fs-xs); color: var(--bone-mute); }
+
+.topic-list { display: grid; gap: var(--s3); }
+.topic-row { display: grid; gap: var(--s1); }
+.topic-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
+.topic-name { font-size: var(--fs-sm); }
+.topic-rate { font-weight: 900; }
+.topic-bar { height: 8px; }
+.topic-count { font-size: var(--fs-xs); color: var(--bone-mute); }
+.topic-row.is-good .topic-fill { background: var(--leaf); }
+.topic-row.is-good .topic-rate { color: var(--leaf); }
+.topic-row.is-mid .topic-fill { background: var(--gold); }
+.topic-row.is-mid .topic-rate { color: var(--gold); }
+.topic-row.is-weak .topic-fill { background: var(--crimson); }
+.topic-row.is-weak .topic-rate { color: var(--crimson); }
+
+.report-foot {
+  display: grid;
+  gap: var(--s2);
+  justify-items: start;
+  padding-top: var(--s4);
+  border-top: 1px solid var(--glass-line);
+}
+.report-streak { font-size: var(--fs-sm); color: var(--bone-mute); }

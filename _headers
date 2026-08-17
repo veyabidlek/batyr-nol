@@ -1,0 +1,17 @@
+# Cloudflare Pages headers.
+#
+# The art and the fonts are content-addressed by filename and never change in
+# place, so they are safe to cache hard. The HTML and the modules are not:
+# a stale index.html paired with a fresh asset set is how a game ships broken.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+/css/*
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

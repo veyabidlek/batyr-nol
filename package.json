@@ -1,0 +1,14 @@
+{
+  "name": "batyr-nol",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Батыр жолы II — Нөл хан. A grade-6 maths battle game in plain HTML, CSS and ES modules.",
+  "type": "module",
+  "scripts": {
+    "test": "node tools/smoke.mjs",
+    "serve": "python3 -m http.server 4173"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

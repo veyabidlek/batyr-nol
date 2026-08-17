@@ -1,0 +1,367 @@
+/* Game feel. Everything here is decoration over a working game — under
+   prefers-reduced-motion the JS never adds these classes at all. */
+
+/* Hitstop: the whole page stops dead for a beat at the moment of contact. */
+.fx-freeze *,
+.fx-freeze *::before,
+.fx-freeze *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* ---------- screen shake ---------- */
+.fx-shake-sm { animation: shake-sm 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+.fx-shake-lg { animation: shake-lg 520ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+@keyframes shake-sm {
+  10% { translate: -6px 2px; }
+  25% { translate: 5px -3px; }
+  40% { translate: -4px -2px; }
+  55% { translate: 3px 2px; }
+  70% { translate: -2px 1px; }
+  100% { translate: 0 0; }
+}
+@keyframes shake-lg {
+  8%  { translate: -13px 5px; rotate: -0.6deg; }
+  20% { translate: 12px -7px; rotate: 0.5deg; }
+  33% { translate: -10px -4px; rotate: -0.4deg; }
+  46% { translate: 8px 5px; rotate: 0.3deg; }
+  60% { translate: -6px 3px; }
+  75% { translate: 4px -2px; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+
+/* ---------- sprite reactions ----------
+   Independent transform properties (scale/translate/rotate) so they compose
+   with the hero sprite's transform: scaleX(-1) instead of fighting it. */
+.fx-squash { animation: squash 380ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+@keyframes squash {
+  0%   { scale: 1 1; }
+  18%  { scale: 1.2 0.82; }
+  42%  { scale: 0.9 1.12; }
+  70%  { scale: 1.05 0.96; }
+  100% { scale: 1 1; }
+}
+
+.fx-windup { animation: windup 380ms cubic-bezier(0.3, 0, 0.2, 1); }
+@keyframes windup {
+  0%   { translate: 0 0; rotate: 0deg; }
+  32%  { translate: -16px 0; rotate: -9deg; }
+  58%  { translate: 36px 0; rotate: 7deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+.fighter-art-enemy.fx-windup { animation-name: windup-left; }
+@keyframes windup-left {
+  0%   { translate: 0 0; rotate: 0deg; }
+  32%  { translate: 16px 0; rotate: 9deg; }
+  58%  { translate: -36px 0; rotate: -7deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+
+.fx-flash-white { animation: flash-white 220ms ease-out; }
+.fx-flash-gold  { animation: flash-gold 260ms ease-out; }
+.fx-flash-red   { animation: flash-red 240ms ease-out; }
+@keyframes flash-white {
+  0%, 40% { filter: brightness(3.4) saturate(0.2) drop-shadow(0 0 12px #fff); }
+  100% { filter: none; }
+}
+@keyframes flash-gold {
+  0%, 45% { filter: brightness(2.6) drop-shadow(0 0 18px var(--gold)) drop-shadow(0 0 34px var(--crimson)); }
+  100% { filter: none; }
+}
+@keyframes flash-red {
+  0%, 40% { filter: brightness(1.7) sepia(1) saturate(7) hue-rotate(-32deg); }
+  100% { filter: none; }
+}
+
+/* ---------- particle layer ---------- */
+.fx-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ---------- full-screen moments ---------- */
+.fx-screen-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  animation: screen-flash 500ms ease-out forwards;
+}
+.fx-screen-white { background: #fff; }
+.fx-screen-gold { background: radial-gradient(circle at 50% 55%, var(--gold), var(--crimson) 45%, transparent 72%); }
+@keyframes screen-flash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* The sabre streak of the ultimate — one diagonal wipe across the stage. */
+.fx-slash {
+  position: absolute;
+  top: -30%;
+  left: -40%;
+  width: 60%;
+  height: 170%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, #fff 42%, var(--gold) 52%, transparent);
+  filter: blur(1px);
+  rotate: 14deg;
+  animation: slash 620ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes slash {
+  0% { translate: 0 0; opacity: 0; }
+  18% { opacity: 1; }
+  100% { translate: 230% 0; opacity: 0; }
+}
+
+/* Killing blow: everything leans in and the colour drains for a beat. */
+.fx-finisher { animation: finisher 900ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes finisher {
+  0% { scale: 1; filter: none; }
+  22% { scale: 1.09; filter: saturate(1.5) contrast(1.15); }
+  70% { scale: 1.05; filter: saturate(0.6); }
+  100% { scale: 1; filter: none; }
+}
+
+/* ---------- floating numbers ---------- */
+.float-num {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  z-index: 6;
+  font-weight: 800;
+  font-size: 22px;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  animation: floatup 950ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+.float-damage { color: var(--crimson); }
+.float-heal { color: var(--leaf); }
+.float-crit { color: var(--crimson); font-size: 28px; }
+.float-ultimate { color: var(--gold); font-size: 34px; -webkit-text-stroke: 1px var(--night-900); }
+@keyframes floatup {
+  0% { opacity: 0; translate: -50% 6px; scale: 0.6; }
+  22% { opacity: 1; scale: 1.15; }
+  40% { scale: 1; }
+  100% { opacity: 0; translate: -50% -52px; }
+}
+
+/* ---------- banners over the stage ---------- */
+  15% { opacity: 1; scale: 1.12; }
+  30% { scale: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; scale: 1.05; }
+}
+
+/* ---------- the blade's flight ----------
+   A crescent that crosses the gap between the fighters, so damage arrives from
+   somewhere instead of appearing out of nowhere. */
+.fx-arc {
+  position: absolute;
+  top: 22%;
+  width: 84px;
+  height: 84px;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 6px solid transparent;
+  filter: blur(0.4px);
+}
+.fx-arc-hit { border-top-color: #fff; border-right-color: var(--gold); }
+.fx-arc-crit { border-top-color: var(--crimson); border-right-color: #fff; width: 104px; height: 104px; }
+.fx-arc-ultimate { border-top-color: var(--gold); border-right-color: var(--crimson); width: 132px; height: 132px; }
+.fx-arc-right { left: 24%; animation: arc-right 420ms cubic-bezier(0.3, 0, 0.4, 1) forwards; }
+.fx-arc-left { right: 24%; animation: arc-left 420ms cubic-bezier(0.3, 0, 0.4, 1) forwards; }
+@keyframes arc-right {
+  0% { translate: 0 0; rotate: -40deg; opacity: 0; scale: 0.6; }
+  25% { opacity: 1; }
+  100% { translate: 130px 0; rotate: 120deg; opacity: 0; scale: 1.15; }
+}
+@keyframes arc-left {
+  0% { translate: 0 0; rotate: 40deg; opacity: 0; scale: 0.6; }
+  25% { opacity: 1; }
+  100% { translate: -130px 0; rotate: -120deg; opacity: 0; scale: 1.15; }
+}
+
+/* ---------- knockback ---------- */
+.fx-knock-right { animation: knock-right 420ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+.fx-knock-left { animation: knock-left 420ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+.fx-knock-right-lg { animation: knock-right-lg 560ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+.fx-knock-left-lg { animation: knock-left-lg 560ms cubic-bezier(0.2, 0.8, 0.3, 1); }
+@keyframes knock-right {
+  0% { translate: 0 0; rotate: 0deg; }
+  30% { translate: 22px -6px; rotate: 7deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+@keyframes knock-left {
+  0% { translate: 0 0; rotate: 0deg; }
+  30% { translate: -22px -6px; rotate: -7deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+@keyframes knock-right-lg {
+  0% { translate: 0 0; rotate: 0deg; }
+  22% { translate: 46px -18px; rotate: 16deg; }
+  55% { translate: 12px 0; rotate: 4deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+@keyframes knock-left-lg {
+  0% { translate: 0 0; rotate: 0deg; }
+  22% { translate: -46px -18px; rotate: -16deg; }
+  55% { translate: -12px 0; rotate: -4deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+
+/* ---------- ultimate cut-in ----------
+   The one moment the whole screen belongs to the hero. */
+.fx-cutin {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+  animation: cutin-fade 900ms ease-out forwards;
+}
+.fx-cutin-lines {
+  position: absolute;
+  inset: -20%;
+  background: repeating-linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.92) 0 3px,
+    transparent 3px 14px
+  );
+  opacity: 0.75;
+  animation: cutin-lines 900ms ease-out forwards;
+}
+.fx-cutin-art {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 62%;
+  max-width: 240px;
+  translate: -50% 0;
+  filter: drop-shadow(0 0 26px var(--gold));
+  animation: cutin-art 900ms cubic-bezier(0.15, 0.9, 0.2, 1) forwards;
+}
+@keyframes cutin-fade { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cutin-lines {
+  0% { translate: -30% 0; }
+  100% { translate: 12% 0; }
+}
+@keyframes cutin-art {
+  0% { scale: 0.4; rotate: -14deg; opacity: 0; }
+  22% { scale: 1.12; rotate: 3deg; opacity: 1; }
+  40% { scale: 1; rotate: 0deg; }
+  100% { scale: 1.06; opacity: 0; }
+}
+
+/* ------------------------------------------------------------------------
+   Additions for this game: the effects the sequel's fights need that the
+   first one did not have — speed lines, the impact frame, the telegraph
+   band, the guard ring, and the boss erasing a piece of the screen.
+   ------------------------------------------------------------------------ */
+
+/* Radial speed lines. Two conic gradients with a hole punched in the middle:
+   the cheapest way to make a still frame move, and the one anime effect that
+   reads instantly at any size. */
+.fx-speed {
+  position: absolute;
+  inset: -20%;
+  z-index: 6;
+  pointer-events: none;
+  mask-image: radial-gradient(circle at 50% 50%, transparent 28%, #000 62%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 28%, #000 62%);
+  animation: speed-in 640ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.fx-speed-gold {
+  background: repeating-conic-gradient(
+    from 0deg, rgba(242, 182, 60, 0.85) 0deg 1.2deg, transparent 1.2deg 5deg);
+}
+.fx-speed-white {
+  background: repeating-conic-gradient(
+    from 0deg, rgba(255, 255, 255, 0.9) 0deg 1deg, transparent 1deg 4deg);
+}
+.fx-speed-red {
+  background: repeating-conic-gradient(
+    from 0deg, rgba(226, 62, 76, 0.8) 0deg 1.4deg, transparent 1.4deg 6deg);
+}
+
+@keyframes speed-in {
+  from { opacity: 0; scale: 1.35; }
+  35% { opacity: 1; }
+  to { opacity: 0; scale: 0.9; }
+}
+
+/* One inverted frame at contact. Two frames of solid colour is the oldest
+   trick in television animation and still the most effective one. */
+.fx-impact-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background: #fff;
+  mix-blend-mode: difference;
+  animation: impact-frame 130ms steps(2, end) forwards;
+}
+
+@keyframes impact-frame {
+  to { opacity: 0; }
+}
+
+/* The special's warning. It stays until the question that parries it is
+   answered — a telegraph that disappears on its own is not a telegraph. */
+.fx-warning {
+  position: absolute;
+  inset-inline: 0;
+  top: 42%;
+  z-index: 7;
+  text-align: center;
+  padding: var(--s2);
+  font-size: var(--fs-lg);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: linear-gradient(90deg, transparent, rgba(226, 62, 76, 0.85), transparent);
+  text-shadow: 0 2px 0 var(--night-900);
+  pointer-events: none;
+  animation: warn-throb 0.8s infinite alternate;
+}
+
+@keyframes warn-throb {
+  from { opacity: 0.72; scale: 0.98; }
+  to { opacity: 1; scale: 1.02; }
+}
+
+/* An expanding ring where a surprise attack was blocked. */
+.fx-guard-ring {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 3px solid var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+  animation: guard-ring 520ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes guard-ring {
+  to { scale: 6; opacity: 0; border-width: 1px; }
+}
+
+/* The boss erasing something: it desaturates, blurs and goes. Deliberately
+   slower than a hit — an erasure should feel like a loss, not an impact. */
+.fx-erased { animation: erase-out 900ms ease-in forwards; }
+
+@keyframes erase-out {
+  40% { filter: grayscale(1) blur(1px); opacity: 0.6; }
+  to { filter: grayscale(1) blur(6px); opacity: 0.1; }
+}
+
+/* Float-up numbers over the fighters, retuned for the dark stage. */
+.float-guard { color: var(--gold); }

@@ -1,0 +1,73 @@
+/* Design tokens.
+
+   The first game was daylight and leather: a friendly picture-book steppe. This
+   one is night. The palette is built for an anime key visual — deep indigo
+   ground, one warm gold that means "you", one teal that means "magic", one
+   crimson that means "damage" — and every accent keeps exactly one meaning so
+   the fight can be read at a glance without reading any words. */
+:root {
+  /* Ground */
+  --night-900: #0B0A1B;   /* page behind everything */
+  --night-800: #12102A;   /* panels */
+  --night-700: #1B1B3A;   /* raised panels, cards */
+  --night-600: #2A2A52;   /* borders, tracks */
+  --violet-900: #2A0E3F;  /* the void: boss phase, erased things */
+
+  /* Ink */
+  --bone: #F3ECDE;
+  --bone-soft: #C9C2B6;
+  --bone-mute: #8A8598;
+
+  /* Semantic accents — one meaning each */
+  --gold: #F2B63C;        /* the hero, spirit, rewards */
+  --gold-deep: #C98F22;
+  --teal: #31D8D0;        /* magic, powers, the seal */
+  --teal-deep: #1B9C97;
+  --crimson: #E23E4C;     /* damage, danger, the enemy bar */
+  --crimson-deep: #A32330;
+  --leaf: #52C77E;        /* healing, correct */
+
+  /* Surfaces */
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-line: rgba(255, 255, 255, 0.12);
+  --scrim: rgba(6, 5, 16, 0.72);
+
+  /* Type */
+  --font: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.6rem;
+  --fs-2xl: 2.1rem;
+
+  /* Space — a four-step scale, and nothing between the steps */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+
+  /* Shape */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+
+  /* Elevation. Three steps; anything else is drift. */
+  --sh-1: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --sh-2: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --sh-3: 0 18px 48px rgba(0, 0, 0, 0.55);
+
+  /* Glow, which this game uses where the first one used shadow */
+  --glow-gold: 0 0 18px rgba(242, 182, 60, 0.55);
+  --glow-teal: 0 0 18px rgba(49, 216, 208, 0.5);
+  --glow-crimson: 0 0 18px rgba(226, 62, 76, 0.5);
+
+  /* Motion */
+  --t-fast: 120ms;
+  --t-mid: 240ms;
+  --t-slow: 480ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
