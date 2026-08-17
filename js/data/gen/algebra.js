@@ -2,7 +2,7 @@
 //
 // Every equation is built backwards from a whole-number root, so a generated
 // fight never asks a sixth-grader for x = 17/3.
-import { int, mcq, pick } from './rng.js';
+import { int, mcq } from './rng.js';
 
 const sign = (rng) => (rng() < 0.5 ? -1 : 1);
 const paren = (v) => (v < 0 ? `(${v})` : String(v));

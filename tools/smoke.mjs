@@ -179,7 +179,13 @@ while (!ended && guard++ < 40) {
   await sleep(750);                     // wind-up + hitstop + commit
   ok(!root.querySelector('.feedback').hidden, 'feedback shows after checking');
   root.querySelector('.action-zone .btn').click();   // next
-  await sleep(40);
+  // With the clock off the herald takes its turn between questions, so "next"
+  // can be followed by a whole strike animation before the next question
+  // appears. Wait for the answer area to come back rather than guessing.
+  for (let wait = 0; wait < 60 && !ended; wait++) {
+    if (root.querySelector('.tile:not(:disabled), .numeric-input:not(:disabled)')) break;
+    await sleep(50);
+  }
 }
 ok(ended, 'the fight reached an end state');
 

@@ -183,11 +183,13 @@ export const POWERS = {
     beforeQuestion: (b) => {
       b.powerState.erased = ['clock', 'option', 'spirit'][clamp(b.phase, 1, 3) - 1];
     },
-    onCorrect: (b) => {
-      // Phase three keeps eating the streak, so the ultimate has to be earned
-      // in a single clean run of three.
-      if (b.powerState.erased === 'spirit' && b.streak >= 2) b.streak = 0;
-    },
+    // Deliberately no `onCorrect`. Every phase of this fight erases
+    // INFORMATION and never CAPABILITY: phase one takes the clock away, phase
+    // two takes one wrong option (never the right one), phase three takes the
+    // spirit meter so the ultimate has to be counted in the player's own head.
+    // An earlier version also reset the streak in phase three, which did not
+    // make the ultimate hard — it made it unreachable, and the fight's best
+    // move stopped existing exactly when it was most needed.
   },
 };
 

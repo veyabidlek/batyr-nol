@@ -143,12 +143,24 @@ def generate(token: str, key: str, prompt: str, *, cutout: bool,
 
 def generate_from(token: str, key: str, base_png: Path, prompt: str) -> Path | None:
     """Image-to-image, used for pose frames — this is what keeps a character's
-    face, armour and proportions identical across four frames."""
+    face, armour and proportions identical across four frames.
+
+    ⚠️ The background instruction has to match what the BASE image actually has.
+    Asking for "the same chroma green field" over a base that came back on white
+    reads as a contradiction, and the model resolves it by inventing scenery —
+    a painted sky and ground that survive the key and ship as a rectangle behind
+    the fighter. Describe the field the base really has, and forbid scenery
+    twice.
+    """
     b64 = base64.b64encode(base_png.read_bytes()).decode()
     text = (f"{STYLE}\n\nNO TEXT ANYWHERE IN THE IMAGE.\n\n{prompt}.\n\n"
-            "Same character, same proportions, same costume, same colours, same "
-            "art style, same flat plain chroma green field, same framing and the "
-            f"same character size within the frame.\n\n{NEGATIVE}")
+            "Same character, exactly the same age and face, same proportions, "
+            "same costume, same colours, same art style, same framing and the "
+            "same character size within the frame. "
+            "The background stays a completely flat, uniform, plain white field: "
+            "no sky, no ground, no horizon, no scenery, no shadow, no gradient, "
+            "no rectangle or block of colour behind the character.\n\n"
+            f"{NEGATIVE}")
     body = {
         "contents": [{"role": "user", "parts": [
             {"inlineData": {"mimeType": "image/png", "data": b64}},

@@ -3,7 +3,7 @@
 // the herald's charge meter, the surprise-attack window, and the order the
 // beats play in.
 import {
-  SPIRIT_AT, GUARD_WINDOW_MS, createBattle, currentQuestion, resolveAnswer,
+  GUARD_WINDOW_MS, createBattle, currentQuestion, resolveAnswer,
   advance, enemyStrike, spiritCharge, ultimateReady, attackLocked, erased,
   beginQuestion, rollSurprise, surpriseStrike,
 } from '../battle.js';
@@ -12,7 +12,7 @@ import { KHAN_PHASES } from '../data/story.js';
 import { powerById } from '../powers.js';
 import { renderQuestion } from '../questions.js';
 import { t, localized } from '../i18n.js';
-import { el, img, pct, prefersReducedMotion } from '../dom.js';
+import { el, pct, prefersReducedMotion } from '../dom.js';
 import { tex } from '../tex.js';
 import * as fx from '../fx.js';
 import { attachFx } from '../fx.js';
@@ -386,9 +386,18 @@ export function renderBattle(root, level, { onExit, onEnd }) {
 
     hud.action.textContent = t('next');
     hud.action.disabled = false;
-    hud.action.onclick = () => {
+    hud.action.onclick = async () => {
       if (battle.over) return finish();
       advance(battle);
+      // With the clock switched off the herald would never act, and a fight
+      // with no incoming blows has no telegraphs and therefore no parries —
+      // the centrepiece of every fight would vanish for exactly the children
+      // who turned the clock off. So it takes its turn on a question cadence
+      // instead, between one question and the next.
+      if (!timerEnabled() && battle.index > 0 && battle.index % 3 === 0) {
+        await enemyTurn();
+        if (!alive || battle.over) return;
+      }
       askQuestion();
     };
   }
@@ -436,4 +445,3 @@ export function renderBattle(root, level, { onExit, onEnd }) {
   showBanner(`⟡ ${localized(power?.name)}: ${localized(power?.hint)}`);
 }
 
-export { SPIRIT_AT };
