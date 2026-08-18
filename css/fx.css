@@ -66,7 +66,7 @@
   100% { filter: none; }
 }
 @keyframes flash-gold {
-  0%, 45% { filter: brightness(2.6) drop-shadow(0 0 18px var(--gold)) drop-shadow(0 0 34px var(--crimson)); }
+  0%, 45% { filter: brightness(2.6) drop-shadow(0 0 18px var(--gold)) drop-shadow(0 0 34px var(--heart)); }
   100% { filter: none; }
 }
 @keyframes flash-red {
@@ -91,7 +91,7 @@
   animation: screen-flash 500ms ease-out forwards;
 }
 .fx-screen-white { background: #fff; }
-.fx-screen-gold { background: radial-gradient(circle at 50% 55%, var(--gold), var(--crimson) 45%, transparent 72%); }
+.fx-screen-gold { background: radial-gradient(circle at 50% 55%, var(--gold), var(--heart) 45%, transparent 72%); }
 @keyframes screen-flash {
   0% { opacity: 0.9; }
   100% { opacity: 0; }
@@ -138,10 +138,10 @@
   pointer-events: none;
   animation: floatup 950ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
 }
-.float-damage { color: var(--crimson); }
-.float-heal { color: var(--leaf); }
-.float-crit { color: var(--crimson); font-size: 28px; }
-.float-ultimate { color: var(--gold); font-size: 34px; -webkit-text-stroke: 1px var(--night-900); }
+.float-damage { color: var(--heart); }
+.float-heal { color: var(--ok); }
+.float-crit { color: var(--heart); font-size: 28px; }
+.float-ultimate { color: var(--gold); font-size: 34px; -webkit-text-stroke: 1px var(--violet-700); }
 @keyframes floatup {
   0% { opacity: 0; translate: -50% 6px; scale: 0.6; }
   22% { opacity: 1; scale: 1.15; }
@@ -171,8 +171,8 @@
   filter: blur(0.4px);
 }
 .fx-arc-hit { border-top-color: #fff; border-right-color: var(--gold); }
-.fx-arc-crit { border-top-color: var(--crimson); border-right-color: #fff; width: 104px; height: 104px; }
-.fx-arc-ultimate { border-top-color: var(--gold); border-right-color: var(--crimson); width: 132px; height: 132px; }
+.fx-arc-crit { border-top-color: var(--heart); border-right-color: #fff; width: 104px; height: 104px; }
+.fx-arc-ultimate { border-top-color: var(--gold); border-right-color: var(--heart); width: 132px; height: 132px; }
 .fx-arc-right { left: 24%; animation: arc-right 420ms cubic-bezier(0.3, 0, 0.4, 1) forwards; }
 .fx-arc-left { right: 24%; animation: arc-left 420ms cubic-bezier(0.3, 0, 0.4, 1) forwards; }
 @keyframes arc-right {
@@ -319,13 +319,13 @@
   top: 42%;
   z-index: 7;
   text-align: center;
-  padding: var(--s2);
-  font-size: var(--fs-lg);
+  padding: var(--sp-2);
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: 0.06em;
   color: #fff;
   background: linear-gradient(90deg, transparent, rgba(226, 62, 76, 0.85), transparent);
-  text-shadow: 0 2px 0 var(--night-900);
+  text-shadow: 0 2px 0 var(--violet-700);
   pointer-events: none;
   animation: warn-throb 0.8s infinite alternate;
 }

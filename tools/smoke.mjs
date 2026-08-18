@@ -39,6 +39,10 @@ dom.window.Audio = class {
   pause() { this.paused = true; }
 };
 globalThis.Audio = dom.window.Audio;
+// jsdom has no media stack, so an un-stubbed play() logs a "Not implemented"
+// wall through the virtual console on every cinematic.
+dom.window.HTMLMediaElement.prototype.play = function () { return Promise.resolve(); };
+dom.window.HTMLMediaElement.prototype.pause = function () {};
 dom.window.HTMLCanvasElement.prototype.getContext = () => null;
 dom.window.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 16);
 dom.window.cancelAnimationFrame = (id) => clearTimeout(id);
@@ -60,6 +64,7 @@ const { renderPath } = await import(APP + 'screens/path.js');
 const { renderBattle } = await import(APP + 'screens/battle.js');
 const { renderResult } = await import(APP + 'screens/result.js');
 const { renderCutscene } = await import(APP + 'screens/cutscene.js');
+const { renderCinematic } = await import(APP + 'screens/cinematic.js');
 const { renderShop } = await import(APP + 'screens/shop.js');
 const { renderReport } = await import(APP + 'screens/report.js');
 const { renderHeroSelect } = await import(APP + 'screens/hero-select.js');
@@ -196,6 +201,18 @@ ok(root.querySelectorAll('.panel-dot').length === PROLOGUE.length, 'the reader s
 
 renderHeroSelect(root, { onDone: () => {} });
 ok(root.querySelectorAll('.hero-card').length === Object.keys(HEROES).length, 'both heroes offered');
+
+// A cinematic must never be able to trap the player: jsdom cannot decode video,
+// so this also exercises the give-up path a broken or blocked clip takes.
+let cinematicDone = false;
+renderCinematic(root, 'assets/intro.mp4', { onDone: () => { cinematicDone = true; } });
+ok(root.querySelector('.cinematic-video'), 'the cinematic renders a video');
+ok(root.querySelector('.screen-cinematic .btn'), 'the cinematic is skippable from the first frame');
+root.querySelector('.screen-cinematic .btn').click();
+ok(cinematicDone, 'skipping a cinematic continues the campaign');
+cinematicDone = false;
+root.querySelector('.screen-cinematic .btn').click();
+ok(!cinematicDone, 'a cinematic can only finish once');
 
 renderShop(root, { onBack: () => {} });
 ok(root.querySelectorAll('.shop-row').length >= 5, 'the treasury lists its wares');

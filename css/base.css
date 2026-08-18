@@ -1,5 +1,6 @@
-/* Reset, page frame, and the two typography facts this game depends on. */
-
+/* Reset, type scale, page frame. Nothing below weight 600 — the type is part of
+   the toy, not a neutral delivery vehicle. Carried over from the first game so
+   the two chapters set text identically. */
 @import url('../vendor/fonts/nunito.css');
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -7,25 +8,33 @@
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Nunito, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.375;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: var(--font);
-  color: var(--bone);
-  background:
-    radial-gradient(120% 90% at 50% 0%, #1E1B45 0%, transparent 60%),
-    radial-gradient(100% 70% at 50% 100%, #241246 0%, transparent 55%),
-    var(--night-900);
-  background-attachment: fixed;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  /* The fight has a fixed action bar at the bottom; on iOS that lands under the
-     home indicator without this. */
-  padding-bottom: env(safe-area-inset-bottom);
+  min-height: 100svh;
+  overscroll-behavior-y: none;
 }
 
-img { max-width: 100%; height: auto; display: block; }
+#app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 var(--sp-4) calc(96px + env(safe-area-inset-bottom));
+  min-height: 100svh;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+img { max-width: 100%; display: block; }
 
 /* ⚠️ Load-bearing. `hidden` is a UA rule, and ANY author rule that sets
    `display` beats it regardless of specificity — so `.feedback { display: grid }`
@@ -34,55 +43,42 @@ img { max-width: 100%; height: auto; display: block; }
    painting empty boxes before this line. */
 [hidden] { display: none !important; }
 
-button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.screen { display: grid; gap: var(--sp-4); padding-top: var(--sp-4); }
+
+/* Type roles */
+.t-title   { font-size: 22px; line-height: 28px; font-weight: 800; letter-spacing: -0.2px; }
+.t-prompt  { font-size: 20px; line-height: 26px; font-weight: 800; letter-spacing: -0.2px; }
+.t-body    { font-size: 16px; line-height: 22px; font-weight: 600; }
+.t-caption {
+  font-size: 12px; line-height: 16px; font-weight: 700;
+  letter-spacing: 0.4px; text-transform: uppercase;
 }
 
-h1, h2, h3, p { margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
 
-#app {
-  max-width: 560px;
-  margin: 0 auto;
-  min-height: 100dvh;
-}
+/* KaTeX inherits the page ink so formulas never look pasted in */
+.tex { color: inherit; }
+.tex-display { display: block; margin: var(--sp-2) 0; font-size: 1.25em; text-align: center; }
+.katex { font-size: 1.05em; }
 
-.screen {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
-  padding: var(--s4) var(--s4) var(--s6);
-}
-
-/* Numerals sit in tabular figures everywhere: a health bar whose "100" is wider
-   than its "99" shifts the whole row every time it ticks. */
-.num {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum' 1;
-}
-
-/* ⚠️ KaTeX ships no Cyrillic. A unit written as \text{см} renders as tofu boxes
-   unless the text class is pointed at a font that has the glyphs. This one line
-   is the difference between "40 см²" and "40 ▯▯²" on every question in the
-   game — do not remove it, and do not assume a webfont swap made it obsolete. */
+/* ⚠️ KaTeX's own fonts carry no Cyrillic, so anything inside \text{} — "см",
+   "тең" — renders as tofu boxes. Hand those runs back to Nunito; the maths
+   italics, operators and fraction rules keep the KaTeX faces. Do not remove
+   this, and do not assume a font swap made it obsolete. */
 .katex .text,
-.katex .mathrm {
-  font-family: var(--font) !important;
+.katex .text .mord,
+.katex .mord.text {
+  font-family: Nunito, system-ui, sans-serif;
+  font-weight: 600;
 }
 
-.katex { color: inherit; }
-
-.tex-display {
-  display: block;
-  font-size: 1.35em;
-  margin: var(--s2) 0;
-  text-align: center;
+:focus-visible {
+  outline: 3px solid var(--violet-400);
+  outline-offset: 2px;
 }
 
 /* Everything in the game respects this. Nothing in the game *requires* motion
-   to be understood — the fight's outcome is always in the bars and the text. */
+   to be understood — a fight's state is always in the bars and the text. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -90,12 +86,4 @@ h1, h2, h3, p { margin: 0; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Focus is visible, always. The game is playable from a keyboard because the
-   answer tiles are real buttons, and a child on a school laptop is a real user. */
-:focus-visible {
-  outline: 3px solid var(--teal);
-  outline-offset: 2px;
-  border-radius: var(--r-sm);
 }

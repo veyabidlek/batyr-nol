@@ -5,6 +5,7 @@ import { renderPath } from './screens/path.js';
 import { renderBattle } from './screens/battle.js';
 import { renderResult } from './screens/result.js';
 import { renderCutscene } from './screens/cutscene.js';
+import { renderCinematic } from './screens/cinematic.js';
 import { renderShop } from './screens/shop.js';
 import { renderReport } from './screens/report.js';
 import { renderHeroSelect } from './screens/hero-select.js';
@@ -36,6 +37,14 @@ const showScreen = (name, render) => {
 const cutsceneStep = (id, panels) => (done) => {
   if (!panels?.length || hasSeen(id)) return done();
   showScreen('cutscene', () => renderCutscene(root, panels, {
+    onDone: () => { markSeen(id); done(); },
+  }));
+};
+
+/** A rendered clip that plays once ever, keyed by id. */
+const cinematicStep = (id, file) => (done) => {
+  if (hasSeen(id)) return done();
+  showScreen('cinematic', () => renderCinematic(root, `assets/${file}.mp4`, {
     onDone: () => { markSeen(id); done(); },
   }));
 };
@@ -94,7 +103,10 @@ function startLevel(level) {
 
   queue([
     heroStep,
-    ...(level.id === 'l1' ? [cutsceneStep('prologue', PROLOGUE)] : []),
+    ...(level.id === 'l1' ? [
+      cinematicStep('cinematic-intro', 'intro'),
+      cutsceneStep('prologue', PROLOGUE),
+    ] : []),
     cutsceneStep(`intro-${level.id}`, intro),
     // A cleared level replays with freshly generated questions, so the second
     // run is maths again rather than a memory test.
@@ -115,7 +127,14 @@ function endLevel(battle) {
 
   queue([
     ...(firstWin && outro ? [cutsceneStep(`outro-${battle.level.id}`, outro)] : []),
-    ...(firstWin && battle.level.boss ? [cutsceneStep('epilogue', EPILOGUE)] : []),
+    // The two clips that sit inside the story rather than around it: the twist
+    // plays after the Balance's four panels have set it up, and the ending
+    // plays between the khan's two panels and the epilogue.
+    ...(firstWin && battle.level.id === 'l8' ? [cinematicStep('cinematic-twist', 'twist')] : []),
+    ...(firstWin && battle.level.boss ? [
+      cinematicStep('cinematic-victory', 'victory'),
+      cutsceneStep('epilogue', EPILOGUE),
+    ] : []),
     () => showScreen('result', () => renderResult(root, battle, {
       onRetry: () => startLevel(battle.level),
       onNext: (level) => startLevel(level),

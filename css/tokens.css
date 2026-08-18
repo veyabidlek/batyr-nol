@@ -1,73 +1,78 @@
 /* Design tokens.
 
-   The first game was daylight and leather: a friendly picture-book steppe. This
-   one is night. The palette is built for an anime key visual — deep indigo
-   ground, one warm gold that means "you", one teal that means "magic", one
-   crimson that means "damage" — and every accent keeps exactly one meaning so
-   the fight can be read at a glance without reading any words. */
-:root {
-  /* Ground */
-  --night-900: #0B0A1B;   /* page behind everything */
-  --night-800: #12102A;   /* panels */
-  --night-700: #1B1B3A;   /* raised panels, cards */
-  --night-600: #2A2A52;   /* borders, tracks */
-  --violet-900: #2A0E3F;  /* the void: boss phase, erased things */
+   The same system as the first game — light canvas, one brand family, accents
+   that each keep exactly one meaning — with the brand moved from leather brown
+   to amethyst. Same toy, second chapter: a player who finished Батыр жолы
+   should recognise every control on sight and still know instantly which game
+   they have open.
 
-  /* Ink */
-  --bone: #F3ECDE;
-  --bone-soft: #C9C2B6;
-  --bone-mute: #8A8598;
+   The signature move carries over: a raised element casts no blur. It sits on
+   a flat 4px edge of its own hue and drops onto it when pressed. */
+:root {
+  /* Brand — amethyst / night-violet */
+  --violet-100: #F1ECFB;   /* tinted surfaces, banner fills */
+  --violet-200: #DFD3F6;   /* highlight */
+  --violet-400: #8B6BE0;   /* hover / light rim */
+  --violet-500: #6B47C9;   /* PRIMARY: buttons, active states */
+  --violet-600: #543399;   /* button underside, pressed */
+  --violet-700: #33206B;   /* deepest violet */
+
+  /* Environment */
+  --canvas:     #F8F5FF;
+  --steppe:     #C9BCE8;
+  --trail:      #E9E1FA;
+  --trail-edge: #D3C6EE;
 
   /* Semantic accents — one meaning each */
-  --gold: #F2B63C;        /* the hero, spirit, rewards */
-  --gold-deep: #C98F22;
-  --teal: #31D8D0;        /* magic, powers, the seal */
-  --teal-deep: #1B9C97;
-  --crimson: #E23E4C;     /* damage, danger, the enemy bar */
-  --crimson-deep: #A32330;
-  --leaf: #52C77E;        /* healing, correct */
+  --heart: #FF4B4B;   /* health */
+  --flame: #FF9A00;   /* streak */
+  --gem:   #21B5F0;   /* currency */
+  --gold:  #FFC42E;   /* stars, rewards, the ultimate */
+  --teal:  #17A9AE;   /* the heralds' powers, and anything magical */
+  --ok:    #4CB93E;   /* correct answer */
+  --ok-100:#E9F8DC;
+  --ok-700:#2C6E24;
+  --bad-100:#FFE9E9;
 
-  /* Surfaces */
-  --glass: rgba(255, 255, 255, 0.06);
-  --glass-line: rgba(255, 255, 255, 0.12);
-  --scrim: rgba(6, 5, 16, 0.72);
-
-  /* Type */
-  --font: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --fs-xs: 0.75rem;
-  --fs-sm: 0.875rem;
-  --fs-md: 1rem;
-  --fs-lg: 1.25rem;
-  --fs-xl: 1.6rem;
-  --fs-2xl: 2.1rem;
-
-  /* Space — a four-step scale, and nothing between the steps */
-  --s1: 0.25rem;
-  --s2: 0.5rem;
-  --s3: 0.75rem;
-  --s4: 1rem;
-  --s5: 1.5rem;
-  --s6: 2rem;
+  /* Neutrals */
+  --ink:      #2E2740;
+  --ink-soft: #6B6280;
+  --ink-mute: #A9A2BC;
+  --line:     #E6E0F2;
+  --surface:  #FFFFFF;
+  --locked:   #DCD6EA;
+  --locked-shadow: #C3BBD6;
 
   /* Shape */
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 22px;
+  --r-tile: 12px;
+  --r-card: 16px;
+  --r-sheet: 24px;
+  --r-btn: 16px;
   --r-pill: 999px;
 
-  /* Elevation. Three steps; anything else is drift. */
-  --sh-1: 0 2px 8px rgba(0, 0, 0, 0.35);
-  --sh-2: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --sh-3: 0 18px 48px rgba(0, 0, 0, 0.55);
+  /* 4pt grid */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
 
-  /* Glow, which this game uses where the first one used shadow */
-  --glow-gold: 0 0 18px rgba(242, 182, 60, 0.55);
-  --glow-teal: 0 0 18px rgba(49, 216, 208, 0.5);
-  --glow-crimson: 0 0 18px rgba(226, 62, 76, 0.5);
+  --underside: 4px;
+}
 
-  /* Motion */
-  --t-fast: 120ms;
-  --t-mid: 240ms;
-  --t-slow: 480ms;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas:  #17131F;
+    --surface: #221C2E;
+    --ink:      #F2EEFA;
+    --ink-soft: #BDB4CF;
+    --ink-mute: #82799A;
+    --line:     #362C4A;
+    --violet-100:#2C2340;
+    --locked:   #2E2740;
+    --locked-shadow: #221C2E;
+    --ok-100:  #22331B;
+    --bad-100: #3A2028;
+  }
 }

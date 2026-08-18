@@ -1,193 +1,227 @@
-/* The pieces that appear on more than one screen: buttons, bars, tiles, chips. */
+/* Components. The signature move of this system is the "solid underside":
+   a raised element casts no blur, it sits on a 4px flat edge of its own hue and
+   drops onto it when pressed. Same as the first game — only the hue moved. */
 
-/* ---------------------------------------------------------------- buttons */
-
+/* ---------- buttons ---------- */
 .btn {
-  border: 0;
-  border-radius: var(--r-pill);
-  padding: var(--s3) var(--s5);
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-btn);
+  font-size: 16px;
   font-weight: 800;
-  font-size: var(--fs-md);
-  letter-spacing: 0.01em;
-  transition: transform var(--t-fast) var(--ease), filter var(--t-fast);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 120ms ease;
 }
-
-.btn:active { transform: translateY(1px) scale(0.985); }
 
 .btn-primary {
-  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
-  color: #241706;
-  box-shadow: var(--sh-2), var(--glow-gold);
+  background: var(--violet-500);
+  color: #fff;
+  box-shadow: 0 var(--underside) 0 var(--violet-600);
+}
+.btn-primary:hover:not(:disabled) { background: var(--violet-400); }
+.btn-primary:active:not(:disabled) {
+  transform: translateY(var(--underside));
+  box-shadow: 0 0 0 var(--violet-600);
 }
 
-.btn-primary:disabled {
-  background: var(--night-600);
-  color: var(--bone-mute);
+.btn-ghost {
+  background: var(--surface);
+  color: var(--ink-soft);
+  border: 2px solid var(--line);
+  box-shadow: 0 var(--underside) 0 var(--line);
+}
+.btn-ghost:active { transform: translateY(var(--underside)); box-shadow: 0 0 0 var(--line); }
+
+.btn:disabled {
+  background: var(--locked);
+  color: var(--ink-mute);
   box-shadow: none;
   cursor: default;
 }
 
-.btn-ghost {
-  background: var(--glass);
-  color: var(--bone);
-  border: 1px solid var(--glass-line);
+.btn-small {
+  width: auto;
+  min-height: 40px;
+  padding: 0 var(--sp-3);
+  font-size: 13px;
 }
 
-.btn-small { padding: var(--s2) var(--s3); font-size: var(--fs-sm); }
-.btn.is-disabled { opacity: 0.5; cursor: default; }
+.btn.is-disabled { opacity: 0.6; cursor: default; }
+
+.action-zone {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0 calc(var(--sp-3) + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--canvas) 72%, transparent);
+  z-index: 5;
+}
 
 .icon-btn {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--glass-line);
+  background: var(--surface);
+  border: 2px solid var(--line);
   border-radius: var(--r-pill);
-  background: var(--glass);
-  font-size: var(--fs-md);
+  box-shadow: 0 3px 0 var(--line);
+  font-size: 16px;
   line-height: 1;
+  transition: transform 80ms ease, box-shadow 80ms ease;
 }
-
-.icon-btn.is-on { border-color: var(--teal); color: var(--teal); }
-.lang-btn { width: auto; padding: 0 var(--s3); font-size: var(--fs-xs); font-weight: 800; }
-
-/* ------------------------------------------------------------------- bars */
-
-.hp-bar, .spirit-meter, .charge-track, .topic-bar, .track {
-  position: relative;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid var(--glass-line);
-  border-radius: var(--r-pill);
+.icon-btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--line); }
+.icon-btn.is-on {
+  background: var(--violet-100);
+  border-color: var(--violet-400);
+  box-shadow: 0 3px 0 var(--violet-400);
 }
+.lang-btn { width: auto; padding: 0 var(--sp-3); font-size: 12px; font-weight: 800; letter-spacing: 0.4px; }
 
-.hp-bar { height: 10px; }
-.spirit-meter { height: 5px; margin-top: 3px; }
-.charge-track { height: 8px; flex: 1; }
-.track { height: 6px; flex: 1; }
-
-.hp-fill, .spirit-fill, .charge-fill, .track-fill, .topic-fill {
-  display: block;
-  height: 100%;
-  width: 0;
-  border-radius: inherit;
-  transition: width var(--t-mid) var(--ease);
-}
-
-.hp-fill-hero { background: linear-gradient(90deg, var(--leaf), #8FE3AC); }
-.hp-fill-enemy { background: linear-gradient(90deg, var(--crimson-deep), var(--crimson)); }
-.spirit-fill { background: linear-gradient(90deg, var(--gold-deep), var(--gold)); box-shadow: var(--glow-gold); }
-.track-fill { background: var(--teal); }
-
-.charge-fill { background: linear-gradient(90deg, #6A3B8F, var(--crimson)); }
-.charge-fill.is-imminent { animation: pulse-warn 0.5s infinite; }
-
-@keyframes pulse-warn {
-  50% { filter: brightness(1.6); }
-}
-
-/* An erased element is still in the layout — the boss removes information,
-   not the interface, and a bar that vanished would reflow the whole screen. */
-.is-erased {
-  filter: grayscale(1) brightness(0.4);
-  opacity: 0.35;
-}
-
-/* ------------------------------------------------------------- answer tiles */
-
-.tile-bank {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s2);
-}
+/* ---------- answer tiles ---------- */
+.tile-bank { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
 
 .tile {
-  min-height: 3.25rem;
-  padding: var(--s3);
-  display: grid;
-  place-items: center;
+  position: relative;
+  min-height: 52px;
+  padding: var(--sp-2) var(--sp-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--r-tile);
+  box-shadow: 0 3px 0 var(--line);
+  font-weight: 700;
   text-align: center;
-  border: 2px solid var(--glass-line);
-  border-radius: var(--r-md);
-  background: var(--night-700);
-  color: var(--bone);
-  font-size: var(--fs-md);
-  transition: border-color var(--t-fast), transform var(--t-fast) var(--ease),
-              box-shadow var(--t-fast);
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 120ms ease;
 }
-
-.tile:active { transform: scale(0.97); }
-
-.tile.is-picked {
-  border-color: var(--gold);
-  box-shadow: var(--glow-gold);
+.tile:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--line); }
+.tile.is-picked, .tile.is-active {
+  background: var(--violet-100);
+  border-color: var(--violet-400);
+  box-shadow: 0 3px 0 var(--violet-400);
 }
+.tile.is-paired { background: var(--violet-100); border-color: var(--violet-200); }
+.tile:disabled { cursor: default; opacity: 0.85; }
 
-.tile:disabled { opacity: 0.55; cursor: default; }
+/* Erased by the khan: still in the layout, struck through, unusable. */
+.tile.is-gone { opacity: 0.3; text-decoration: line-through; box-shadow: none; }
 
-.tile.is-gone {
-  opacity: 0.12;
-  text-decoration: line-through;
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.match-col { display: grid; gap: var(--sp-3); align-content: start; }
+.match-badge {
+  position: absolute;
+  top: -8px; right: -8px;
+  min-width: 22px; height: 22px;
+  display: grid; place-items: center;
+  background: var(--violet-500);
+  color: #fff;
+  border-radius: var(--r-pill);
+  font-size: 12px; font-weight: 800;
 }
 
 .numeric-wrap { display: flex; justify-content: center; }
-
 .numeric-input {
-  width: min(14rem, 100%);
-  padding: var(--s3);
+  width: 100%;
+  max-width: 240px;
+  height: 56px;
+  padding: 0 var(--sp-4);
   text-align: center;
-  font-size: var(--fs-xl);
+  font-size: 24px;
   font-weight: 800;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--r-tile);
+  box-shadow: 0 3px 0 var(--line);
   font-variant-numeric: tabular-nums;
-  color: var(--bone);
-  background: var(--night-700);
-  border: 2px solid var(--glass-line);
-  border-radius: var(--r-md);
+}
+.numeric-input:focus {
+  outline: none;
+  border-color: var(--violet-400);
+  box-shadow: 0 3px 0 var(--violet-400);
 }
 
-.numeric-input:focus { border-color: var(--teal); outline: none; }
-
-.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); }
-.match-col { display: grid; gap: var(--s2); }
-.match-badge {
-  position: absolute;
-  top: 4px; right: 6px;
-  font-size: var(--fs-xs);
-  color: var(--teal);
-  font-weight: 800;
-}
-.match-col .tile { position: relative; }
-.match-col .tile.is-active { border-color: var(--teal); }
-.match-col .tile.is-paired { border-color: var(--gold); }
-
-/* ------------------------------------------------------------------ chips */
-
+/* ---------- counters ---------- */
 .count {
   display: inline-flex;
   align-items: center;
-  gap: var(--s1);
-  padding: var(--s1) var(--s2);
-  border-radius: var(--r-pill);
-  background: var(--glass);
-  border: 1px solid var(--glass-line);
+  gap: var(--sp-1);
   font-weight: 800;
-  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
 }
+.count-icon { width: 24px; height: 24px; object-fit: contain; }
 
-.count-icon { width: 18px; height: 18px; }
+/* ---------- bars ---------- */
+.hp-bar, .track, .charge-track, .spirit-meter, .topic-bar {
+  background: var(--line);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.hp-bar { height: 12px; }
+.spirit-meter { height: 6px; margin-top: 3px; }
+.track { flex: 1; height: 12px; }
+.charge-track { flex: 1; height: 10px; }
+.topic-bar { height: 10px; }
 
-.stars { display: inline-flex; gap: 2px; }
-.star { color: var(--night-600); font-size: var(--fs-sm); }
-.star.is-on { color: var(--gold); text-shadow: var(--glow-gold); }
-.stars-lg .star { font-size: var(--fs-xl); }
+.hp-fill, .track-fill, .charge-fill, .spirit-fill, .topic-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: var(--r-pill);
+  transition: width 300ms ease-in-out;
+}
+.hp-fill-enemy { background: var(--heart); }
+.hp-fill-hero { background: var(--ok); }
+.track-fill { background: var(--violet-500); }
+.spirit-fill { background: var(--gold); }
+.charge-fill { background: var(--flame); }
+.charge-fill.is-imminent { animation: pulse-warn 500ms infinite; }
+
+@keyframes pulse-warn { 50% { filter: brightness(1.35); } }
+
+/* The khan removes information, not interface: an erased bar keeps its box so
+   nothing below it reflows. */
+.is-erased { filter: grayscale(1); opacity: 0.3; }
+
+/* ---------- feedback banner ---------- */
+.feedback {
+  position: relative;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  padding-right: 92px;
+  border-radius: var(--r-card);
+  animation: rise 200ms ease-out;
+}
+.feedback.is-correct { background: var(--ok-100); color: var(--ok-700); }
+.feedback.is-wrong { background: var(--bad-100); color: var(--heart); }
+.feedback-title { font-size: 18px; font-weight: 800; }
+.feedback-tags { margin-top: var(--sp-1); font-size: 13px; font-weight: 700; }
+.feedback-answer { margin-top: var(--sp-2); font-size: 20px; font-weight: 800; }
+.feedback-exp { margin-top: var(--sp-2); color: var(--ink-soft); font-size: 14px; font-weight: 600; }
+.feedback-cub { margin-top: var(--sp-2); color: var(--violet-500); font-size: 14px; font-weight: 700; }
+.feedback-mascot { position: absolute; right: var(--sp-2); bottom: var(--sp-2); width: 76px; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---------- stars + badges ---------- */
+.stars { display: flex; gap: 2px; justify-content: center; }
+.star { color: var(--locked); font-size: 14px; }
+.star.is-on { color: var(--gold); }
+.stars-lg .star { font-size: 28px; }
 
 .phase-badge {
-  margin-left: var(--s2);
-  padding: 0 var(--s2);
+  margin-left: var(--sp-2);
+  padding: 2px var(--sp-2);
   border-radius: var(--r-pill);
-  background: var(--violet-900);
-  border: 1px solid var(--crimson);
-  color: var(--crimson);
-  font-size: var(--fs-xs);
+  background: var(--heart);
+  color: #fff;
+  font-size: 11px;
   font-weight: 800;
 }

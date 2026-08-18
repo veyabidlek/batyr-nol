@@ -47,7 +47,21 @@ to be *played* differently, rather than one fight ten times.
   read at any moment rather than remembered.
 - **Comic reader.** The story arrives as panels that slide in and type
   themselves out; a tap finishes the panel, a second tap moves on.
+- **Three rendered cinematics** (Veo): the opening, the moment the twist lands
+  after the eighth fight, and the ending. Each is skippable from its first
+  frame, and a clip that fails to load or is blocked from autoplaying continues
+  the campaign exactly as if it had finished.
 - **Two heroes**, chosen at the start and changeable at any time.
+
+## The look
+
+Same design system as the first game — light canvas, one brand family, the
+"solid underside" on every raised control — moved from leather brown to
+amethyst. A player who finished Батыр жолы should recognise every control on
+sight and still know instantly which of the two they have open. The arena is
+the one dark surface in the game, because it is a painted scene: the cream
+frame around it is what makes it read as a stage rather than as a background
+that failed to load.
 
 ## Layout
 
@@ -108,7 +122,23 @@ gcloud auth application-default login
 python3 tools/gen_art.py        # characters, objects, arenas, comic panels
 python3 tools/gen_poses.py      # the three extra frames per fighter
 python3 tools/gen_music.py      # four Lyria loops
+python3 tools/gen_veo.py        # three 8-second cinematics
 ```
+
+Three things the generators had to be taught, all recorded in the scripts:
+
+- The image model paints a **rectangle of sky behind a character** unless the
+  prompt forbids panels and blocks of colour by name — and that rectangle
+  survives the chroma key, because it is a separate colour region rather than
+  one connected to the border.
+- Pose frames are image-to-image, and the background instruction has to match
+  the field the **base image actually has**. Asking for "the same chroma green
+  field" over a base that came back on white reads as a contradiction, and the
+  model resolves it by inventing scenery.
+- Veo **letters gibberish onto large metal surfaces**: the first take of the
+  twist shot came back with gold "6", "2" and "@" across the armour plates. In
+  a maths game a stray digit on screen is worse than in most, so the ban is
+  repeated inside that shot's own description.
 
 `assets/raw/` (the uncompressed originals) is not committed — it is several
 hundred megabytes and adds nothing to a clone.
