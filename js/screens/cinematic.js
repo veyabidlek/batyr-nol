@@ -15,9 +15,20 @@ export function renderCinematic(root, src, { onDone }) {
   let finished = false;
 
   // Whatever happens — ended, error, stalled, skipped — this runs once.
+  //
+  // ⚠️ The stop is the load-bearing half. Removing a <video> from the DOM does
+  // NOT stop it: a detached media element keeps playing, and these clips carry
+  // their own generated score, so skipping the opening left its soundtrack
+  // running underneath the fight music for the rest of the session. Clearing
+  // `src` and calling load() releases the buffer as well as silencing it.
   const done = () => {
     if (finished) return;
     finished = true;
+    try {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    } catch { /* a browser that dislikes any of that has still been paused */ }
     onDone();
   };
 

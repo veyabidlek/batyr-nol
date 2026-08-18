@@ -34,13 +34,22 @@ export function setTrack(name) {
   audio.volume = 0;
   if (isMuted()) return;
 
+  // ⚠️ The fade-in ramps `node`, the track it was started for — NOT the
+  // module-level `audio`. Those are the same object only until the next track
+  // change: read through the module variable and a fade-in begun for the road
+  // music carries on ramping the fight music instead, while the track it was
+  // supposed to raise sits frozen at whatever volume it had reached.
+  const node = audio;
+
   // Autoplay is only allowed after a gesture; every entry point here follows a
   // tap, and a rejected play() is not worth surfacing to a ten-year-old.
-  audio.play().then(() => {
+  node.play().then(() => {
     const step = VOLUME / (FADE_MS / 40);
     const timer = setInterval(() => {
-      audio.volume = Math.min(VOLUME, audio.volume + step);
-      if (audio.volume >= VOLUME - 0.01) clearInterval(timer);
+      // A track that has been swapped out mid-fade is no longer ours to raise.
+      if (node !== audio) return clearInterval(timer);
+      node.volume = Math.min(VOLUME, node.volume + step);
+      if (node.volume >= VOLUME - 0.01) clearInterval(timer);
     }, 40);
   }).catch(() => {});
 }

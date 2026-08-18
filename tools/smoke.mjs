@@ -41,8 +41,14 @@ dom.window.Audio = class {
 globalThis.Audio = dom.window.Audio;
 // jsdom has no media stack, so an un-stubbed play() logs a "Not implemented"
 // wall through the virtual console on every cinematic.
-dom.window.HTMLMediaElement.prototype.play = function () { return Promise.resolve(); };
-dom.window.HTMLMediaElement.prototype.pause = function () {};
+// Enough of a media stack to assert on: jsdom implements none of it, and an
+// un-stubbed play() logs a "Not implemented" wall through the virtual console.
+dom.window.HTMLMediaElement.prototype.play = function () {
+  this._playing = true;
+  return Promise.resolve();
+};
+dom.window.HTMLMediaElement.prototype.pause = function () { this._playing = false; };
+dom.window.HTMLMediaElement.prototype.load = function () {};
 dom.window.HTMLCanvasElement.prototype.getContext = () => null;
 dom.window.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 16);
 dom.window.cancelAnimationFrame = (id) => clearTimeout(id);
@@ -206,10 +212,16 @@ ok(root.querySelectorAll('.hero-card').length === Object.keys(HEROES).length, 'b
 // so this also exercises the give-up path a broken or blocked clip takes.
 let cinematicDone = false;
 renderCinematic(root, 'assets/intro.mp4', { onDone: () => { cinematicDone = true; } });
-ok(root.querySelector('.cinematic-video'), 'the cinematic renders a video');
+const clip = root.querySelector('.cinematic-video');
+ok(clip, 'the cinematic renders a video');
 ok(root.querySelector('.screen-cinematic .btn'), 'the cinematic is skippable from the first frame');
+ok(clip._playing, 'the cinematic starts playing on its own');
 root.querySelector('.screen-cinematic .btn').click();
 ok(cinematicDone, 'skipping a cinematic continues the campaign');
+// The bug this guards: a detached <video> keeps playing, and these clips carry
+// their own score — a skipped opening ran under the fight music all session.
+ok(!clip._playing, 'a skipped cinematic is actually stopped, not just unmounted');
+ok(!clip.getAttribute('src'), 'a finished cinematic releases its source');
 cinematicDone = false;
 root.querySelector('.screen-cinematic .btn').click();
 ok(!cinematicDone, 'a cinematic can only finish once');
